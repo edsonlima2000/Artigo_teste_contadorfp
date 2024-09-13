@@ -1,0 +1,7 @@
+2024-09-12 21:25:15 - INFO - HTTP Request: POST https://studioai-dev.openai.azure.com//openai/deployments/StudioAI/chat/completions?api-version=AZURE_OPENAI_VERSION "HTTP/1.1 404 Resource Not Found"
+2024-09-12 21:25:25 - INFO - HTTP Request: POST https://studioai-dev.openai.azure.com//openai/deployments/StudioAI/chat/completions?api-version=AZURE_OPENAI_VERSION "HTTP/1.1 404 Resource Not Found"
+2024-09-12 21:39:29 - INFO - HTTP Request: POST https://studioai-dev.openai.azure.com//openai/deployments/StudioAI/chat/completions?api-version=2024-02-01 "HTTP/1.1 200 OK"
+2024-09-12 21:39:32 - INFO - HTTP Request: POST https://studioai-dev.openai.azure.com//openai/deployments/StudioAI/chat/completions?api-version=2024-02-01 "HTTP/1.1 200 OK"
+2024-09-12 21:39:37 - INFO - HTTP Request: POST https://studioai-dev.openai.azure.com//openai/deployments/StudioAI/chat/completions?api-version=2024-02-01 "HTTP/1.1 200 OK"
+2024-09-12 21:46:03 - INFO - HTTP Request: POST https://studioai-dev.openai.azure.com//openai/deployments/StudioAI/chat/completions?api-version=2024-02-01 "HTTP/1.1 200 OK"
+2024-09-12 21:46:07 - INFO - HTTP Request: POST https://studioai-dev.openai.azure.com//openai/deployments/StudioAI/chat/completions?api-version=2024-02-01 "HTTP/1.1 200 OK"

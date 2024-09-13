@@ -1,0 +1,16 @@
+Conte os Software Functionality Points (SFP) para o código fornecido no formato JSON.
+
+retorne apenas no formato JSON. A estrutura não deve variar e deve seguir o modelo abaixo:
+
+{
+  "Arquivo": "string",
+  "Total_SFP": "integer",
+  "Elementos_FP": [
+    {
+      "Nome_Arquivo": "string",
+      "Extensao": "string",
+      "Elemento_FP": "string",
+      "Pontos": "integer"
+    }
+  ]
+}
