@@ -403,36 +403,6 @@ def process_fp_count_commit(project, selected_commit_id, metadata_info=None):
     preencher_grid(resultado_total["Elementos_FP"])
     return resultado_total['Total_SFP']
 
-    # Processar as diferenças
-    with open('resultado_intermediario.txt', 'w') as resultado_intermediario:
-        for diff in diffs:
-            path = diff.get('new_path') or diff.get('old_path')
-            if not path or not any(path.endswith(ext) for ext in extensoes_suportadas):
-                continue
-
-            # Obter o conteúdo do arquivo no commit selecionado
-            try:
-                file_content = project.files.get(file_path=path, ref=selected_commit_id).decode().decode('utf-8')
-            except gitlab.exceptions.GitlabGetError as e:
-                print(f"Erro ao obter o arquivo {path} no commit {selected_commit_id}: {e}")
-                continue
-
-            conteudo_arquivos = {path: file_content}
-            descricao_detalhada = gerar_descricao_detalhada(conteudo_arquivos)
-            descricao_projeto = gerar_descricao_projeto([{'path': path, 'type': 'blob'}])
-
-            try:
-                resposta = consultar_especialista_ai(f"Alterações no arquivo {path}", descricao_detalhada, path)
-                if resposta:
-                    resultado_total['Total_SFP'] += resposta.get('Total_SFP', 0)
-                    resultado_total["Elementos_FP"].extend(resposta.get("Elementos_FP", []))
-                    resultado_intermediario.write(json.dumps(resposta) + "\n")
-            except Exception as e:
-                print(f"Erro ao processar o arquivo {path}: {e}")
-
-    preencher_grid(resultado_total["Elementos_FP"])
-    return resultado_total['Total_SFP']
-
 # Função para obter o commit anterior
 def get_previous_commit(project, commit_id):
     commits = project.commits.list(ref_name='master', all=True)
