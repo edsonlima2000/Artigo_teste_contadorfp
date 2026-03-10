@@ -319,3 +319,12 @@ Script de smoke test para validar autenticação e conectividade com Azure OpenA
 3. **Longo prazo:**
    - Adotar testes baseados em propriedades (Hypothesis) para entradas de diffs/respostas da IA.
    - Criar pipeline CI com gates de qualidade (lint, testes, cobertura, análise estática).
+
+---
+
+## 8. Localização do artefato de documentação
+
+- **Caminho relativo no repositório:** `docs/analise_qualidade_software.md`
+- **URL local completa (ambiente atual):** `file:///workspace/Contador_FP_RDSaude/docs/analise_qualidade_software.md`
+
+> Observação: a URL HTTP(S) pública depende do remote configurado (GitHub/GitLab) e do branch publicado.
