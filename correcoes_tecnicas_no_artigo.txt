@@ -1,0 +1,374 @@
+Gaps tecnicos atuais entre o artigo e o projeto
+===============================================
+
+Objetivo deste documento
+------------------------
+
+Este arquivo lista inconsistencias reais e atuais entre o texto do artigo e a
+implementacao existente no repositorio. O foco aqui nao e sugerir evolucoes do
+software, mas indicar o que o artigo precisa corrigir para descrever fielmente o
+projeto atual.
+
+
+1. O artigo ainda descreve uma classe central ContadorSFP
+--------------------------------------------------------
+
+Gap atual:
+
+O artigo afirma que a analise se aprofunda na classe central ContadorSFP.
+
+Evidencia no projeto:
+
+O arquivo ContadorSFP.py nao contem mais a logica central do sistema. Ele e
+apenas o ponto de entrada:
+
+from contador_fp.app import main
+
+if __name__ == "__main__":
+    main()
+
+A logica real esta no pacote contador_fp/.
+
+Correcao necessaria no artigo:
+
+Substituir referencias a "classe central ContadorSFP" por uma descricao da
+arquitetura modular atual, destacando FunctionPointService como nucleo da
+contagem funcional.
+
+
+2. O artigo atribui process_fp_count() a ContadorSFP
+---------------------------------------------------
+
+Gap atual:
+
+O artigo cita process_fp_count() como metodo da classe ContadorSFP.
+
+Evidencia no projeto:
+
+O metodo esta implementado em:
+
+contador_fp/fp_service.py
+
+Classe:
+
+FunctionPointService
+
+Metodo:
+
+process_fp_count(project, source_branch, target_branch=None, compare=True,
+metadata_info=None)
+
+Correcao necessaria no artigo:
+
+Trocar ContadorSFP.process_fp_count() por
+FunctionPointService.process_fp_count().
+
+
+3. O artigo atribui consultar_especialista_ai() a ContadorSFP
+------------------------------------------------------------
+
+Gap atual:
+
+O artigo cita consultar_especialista_ai() como metodo de apoio da classe
+ContadorSFP.
+
+Evidencia no projeto:
+
+O metodo esta implementado em:
+
+contador_fp/ai_client.py
+
+Classe:
+
+AzureOpenAIAnalyzer
+
+Metodo:
+
+consultar_especialista_ai(descricao_projeto, descricao_detalhada,
+caminho_arquivo)
+
+Correcao necessaria no artigo:
+
+Trocar ContadorSFP.consultar_especialista_ai() por
+AzureOpenAIAnalyzer.consultar_especialista_ai().
+
+
+4. O artigo descreve a arquitetura como se ainda fosse monolitica
+----------------------------------------------------------------
+
+Gap atual:
+
+O artigo ainda usa uma narrativa concentrada em um unico modulo/classe.
+
+Evidencia no projeto:
+
+A arquitetura atual esta separada em:
+
+- ContadorSFP.py: ponto de entrada.
+- contador_fp/app.py: interface Tkinter e orquestracao de UI.
+- contador_fp/config.py: ambiente, logging, OpenAI e GitLab bootstrap.
+- contador_fp/gitlab_service.py: integracao com GitLab.
+- contador_fp/fp_service.py: processamento da contagem funcional.
+- contador_fp/ai_client.py: chamada ao Azure OpenAI.
+- contador_fp/descriptions.py: filtro de extensoes e montagem de descricoes.
+
+Correcao necessaria no artigo:
+
+Atualizar a descricao arquitetural para refletir essa separacao de
+responsabilidades.
+
+
+5. O recorte do Modulo 3 (M3) esta impreciso
+-------------------------------------------
+
+Gap atual:
+
+O artigo delimita o M3 como se estivesse dentro da classe ContadorSFP.
+
+Evidencia no projeto:
+
+O processamento da contagem funcional esta em FunctionPointService, mas depende
+diretamente de colaboradores:
+
+- GitLabService, para recuperar artefatos e diffs.
+- AzureOpenAIAnalyzer, para consultar a IA.
+- descriptions.py, para filtrar arquivos e gerar descricoes.
+
+Correcao necessaria no artigo:
+
+Descrever o M3 como o componente FunctionPointService em colaboracao com
+GitLabService, AzureOpenAIAnalyzer e descriptions.py.
+
+
+6. O diagrama de modulos citado no artigo esta incompleto
+--------------------------------------------------------
+
+Gap atual:
+
+O artigo menciona um diagrama com quatro blocos:
+
+- M1: Interface e Orquestracao.
+- M2: Consulta de Artefatos na API do GitLab.
+- M3: Processamento da Contagem Funcional.
+- M4: Exibicao de Resultados.
+
+Evidencia no projeto:
+
+A implementacao real possui mais separacoes explicitas:
+
+- Interface e orquestracao: ContadorSFPApp.
+- Integracao GitLab: GitLabService.
+- Processamento funcional: FunctionPointService.
+- Preparacao textual e filtro: descriptions.py.
+- Especialista IA: AzureOpenAIAnalyzer.
+- Apresentacao de resultado: Treeview e output_label em ContadorSFPApp.
+
+Correcao necessaria no artigo:
+
+Atualizar o diagrama e a legenda para citar os componentes reais do pacote
+contador_fp.
+
+
+7. Os contratos do artigo precisam usar os componentes reais
+-----------------------------------------------------------
+
+Gap atual:
+
+Os contratos descritos no artigo estao associados a metodos de uma suposta
+classe ContadorSFP.
+
+Evidencia no projeto:
+
+Os contratos devem ser associados aos componentes atuais:
+
+- FunctionPointService.process_fp_count()
+- FunctionPointService.process_fp_count_commit()
+- AzureOpenAIAnalyzer.consultar_especialista_ai()
+- GitLabService.get_commits()
+- GitLabService.get_previous_commit()
+- ContadorSFPApp.process_selection()
+
+Correcao necessaria no artigo:
+
+Reescrever a secao de contratos usando esses nomes e responsabilidades.
+
+
+8. A discussao sobre commit anterior mudou
+-----------------------------------------
+
+Gap atual:
+
+Se o artigo descreve o sistema como dependente de uma lista fixa do branch
+master para localizar commit anterior, isso esta desatualizado.
+
+Evidencia no projeto:
+
+GitLabService.get_previous_commit(project, commit_id) primeiro busca o commit
+por ID e usa parent_ids quando disponivel. Apenas se nao houver parent_ids ele
+recorre ao default_branch do projeto, com fallback para master.
+
+Correcao necessaria no artigo:
+
+Atualizar a descricao do fluxo por commit para explicar que o commit anterior e
+resolvido prioritariamente pelo parent do commit selecionado.
+
+
+9. A invariante de branch nao esta totalmente implementada
+---------------------------------------------------------
+
+Gap atual:
+
+O artigo defende que a consistencia temporal do escopo deve ser garantida por
+hash de commit. Se o texto afirma que isso ja e plenamente implementado no SUT,
+ha desalinhamento.
+
+Evidencia no projeto:
+
+No fluxo por commit, o codigo trabalha com ID de commit. Nos fluxos por branch e
+merge request, o processamento ainda usa nomes de branch para recuperar arquivos:
+
+- branch: project.repository_tree(ref=source_branch, recursive=True)
+- MR: project.files.get(file_path=path, ref=source_branch)
+
+Correcao necessaria no artigo:
+
+Descrever a invariante por hash como requisito/criterio de qualidade analisado
+pelo artigo, mas nao afirmar que ela esta plenamente aplicada em todos os fluxos
+do codigo atual.
+
+
+10. O artigo menciona Application Driver como se fosse artefato existente
+------------------------------------------------------------------------
+
+Gap atual:
+
+Se o artigo afirma que a suite de aceitacao usa Application Driver, Window
+Driver ou Page Object, isso nao corresponde ao repositorio atual.
+
+Evidencia no projeto:
+
+Nao ha modulo, classe ou pasta de testes que implemente Application Driver.
+
+Correcao necessaria no artigo:
+
+Remover afirmacoes de implementacao desse artefato. Se o conceito permanecer no
+texto, deve ser apresentado apenas como abordagem teorica discutida, nao como
+parte existente do projeto.
+
+
+11. O artigo menciona testes automatizados que nao existem no repositorio
+------------------------------------------------------------------------
+
+Gap atual:
+
+Se o artigo afirma existencia de suite automatizada, criterios executados,
+testes derivados de MBT ou testes de aceitacao automatizados, isso nao esta
+aderente ao projeto atual.
+
+Evidencia no projeto:
+
+Nao existe pasta tests/ no repositorio atual.
+Nao ha pytest configurado no requirements.txt.
+Nao ha arquivos de teste versionados.
+
+Correcao necessaria no artigo:
+
+Tratar os casos de teste, tabelas, maquinas de estado e criterios de aceitacao
+como especificacao/metodologia de validacao apresentada no artigo, nao como
+suite automatizada ja implementada no repositorio.
+
+
+12. O artigo deve atualizar os artefatos reais do repositorio
+------------------------------------------------------------
+
+Gap atual:
+
+Qualquer trecho que descreva o projeto como composto apenas por ContadorSFP.py,
+prompt.txt e arquivos auxiliares esta incompleto.
+
+Evidencia no projeto:
+
+Artefatos atuais relevantes:
+
+- ContadorSFP.py
+- contador_fp/app.py
+- contador_fp/config.py
+- contador_fp/gitlab_service.py
+- contador_fp/fp_service.py
+- contador_fp/ai_client.py
+- contador_fp/descriptions.py
+- prompt.txt
+- requirements.txt
+- readme.txt
+- analise_qualidade_software.md
+
+Correcao necessaria no artigo:
+
+Atualizar a secao de artefatos/implementacao para listar e explicar a estrutura
+modular atual.
+
+
+13. A terminologia SFP pode gerar ambiguidade
+--------------------------------------------
+
+Gap atual:
+
+O artigo usa SFP para se referir ao sistema e tambem ao valor estimado de Pontos
+de Funcao.
+
+Evidencia no projeto:
+
+No codigo, `Total_SFP` e o campo numerico agregado retornado pela IA. O sistema
+como produto e descrito como Contador Automatizado de Pontos de Funcao.
+
+Correcao necessaria no artigo:
+
+Definir explicitamente a terminologia:
+
+- SUT: sistema sob teste.
+- Contador Automatizado de Pontos de Funcao: aplicacao analisada.
+- Total_SFP: valor numerico consolidado da estimativa.
+
+
+14. A secao de manutenibilidade precisa refletir o estado atual
+--------------------------------------------------------------
+
+Gap atual:
+
+Se o artigo apresenta o acoplamento em script unico como problema atual, isso
+esta desatualizado.
+
+Evidencia no projeto:
+
+O codigo foi modularizado. A separacao atual reduz o acoplamento entre interface,
+integracao GitLab, chamada Azure OpenAI e processamento funcional.
+
+Correcao necessaria no artigo:
+
+Descrever o acoplamento monolitico como caracteristica da versao anterior ou
+remover essa afirmacao como problema atual. No estado atual, a analise deve
+considerar a arquitetura modular.
+
+
+Resumo dos gaps atuais
+----------------------
+
+1. O artigo cita uma classe central ContadorSFP que nao existe mais como nucleo
+   de negocio.
+2. process_fp_count() pertence a FunctionPointService, nao a ContadorSFP.
+3. consultar_especialista_ai() pertence a AzureOpenAIAnalyzer, nao a
+   ContadorSFP.
+4. A arquitetura real e modular e esta no pacote contador_fp/.
+5. O M3 deve ser descrito como FunctionPointService em colaboracao com
+   GitLabService, AzureOpenAIAnalyzer e descriptions.py.
+6. O diagrama de modulos precisa citar os componentes reais.
+7. Os contratos precisam usar os nomes reais das classes e metodos.
+8. O fluxo de commit anterior usa parent_ids prioritariamente.
+9. A invariante por hash nao esta aplicada plenamente aos fluxos por branch e
+   MR.
+10. Nao existe Application Driver implementado.
+11. Nao existe suite automatizada de testes versionada.
+12. A lista de artefatos do projeto precisa ser atualizada.
+13. A terminologia SFP deve ser desambiguada.
+14. O acoplamento monolitico nao deve ser tratado como problema atual da versao
+   refatorada.
