@@ -112,6 +112,7 @@ contador_fp/
   app.py
   ai_client.py
   config.py
+  contracts.py
   descriptions.py
   fp_service.py
   gitlab_service.py
@@ -238,7 +239,18 @@ Contrato de resposta esperado:
 }
 ```
 
-### 4.6 `contador_fp/fp_service.py`
+### 4.6 `contador_fp/contracts.py`
+
+Responsabilidade:
+
+- Materializar contratos executaveis do SUT.
+- Validar pre-condicoes com `require`.
+- Validar pos-condicoes com `ensure` e `validate_fp_result`.
+- Validar invariantes de processamento com `invariant` e
+  `validate_processing_invariants`.
+- Validar o contrato estrutural da resposta da IA com `validate_ai_response`.
+
+### 4.7 `contador_fp/fp_service.py`
 
 Classe principal: `FunctionPointService`.
 
@@ -283,7 +295,7 @@ Em caso de erro controlado:
 }
 ```
 
-### 4.7 `contador_fp/app.py`
+### 4.8 `contador_fp/app.py`
 
 Classe principal: `ContadorSFPApp`.
 
@@ -499,6 +511,8 @@ contratos, MBT, GORE e rastreabilidade.
 - `GitLabService.get_previous_commit`: validar uso de parent do commit.
 - `AzureOpenAIAnalyzer.consultar_especialista_ai`: validar parsing de JSON puro,
   JSON em markdown, JSON invalido e retry.
+- `contracts`: validar pre-condicoes, pos-condicoes, invariantes e schemas
+  executaveis.
 - `FunctionPointService.process_fp_count`: validar branch sem comparacao.
 - `FunctionPointService.process_fp_count_commit`: validar commit com e sem parent.
 - `ContadorSFPApp.process_selection`: validar erros de selecao e roteamento de
@@ -570,7 +584,7 @@ Execucao da suite de testes:
 Resultado esperado:
 
 ```text
-17 passed
+22 passed
 ```
 
 Observacao: a suite de testes e representativa, nao exaustiva. Ela demonstra a
@@ -643,6 +657,8 @@ Leitura recomendada:
 - `requirements.txt`: dependencias externas.
 - `readme.txt`: instrucoes de contexto, configuracao e execucao.
 - `tests/`: suite automatizada representativa com pytest.
+- `tests/test_contracts.py`: evidencia executavel de pre-condicoes,
+  pos-condicoes e invariantes.
 - `tests/fakes/`: simuladores de GitLab e Azure OpenAI usados pelos testes.
 - `tests/conftest.py`: preparacao automatica do ambiente isolado de teste.
 - `ARTIGO FINAL - DRAFT.txt`: texto local do artigo usado como contexto

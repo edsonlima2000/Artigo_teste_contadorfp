@@ -9,6 +9,8 @@
 | CCE | Cada tipo de escopo relevante aparece em teste | `FunctionPointService` | Branch: `tests/test_fp_service.py::test_process_branch_filters_files_and_reads_by_resolved_sha`; MR: `tests/test_fp_service.py::test_process_merge_request_uses_resolved_shas_for_compare_and_file_read`; Commit: `tests/test_fp_service.py::test_process_commit_uses_parent_diff` |
 | CEB | Cenario base valido com variacoes controladas | `FunctionPointService` + fakes | Base por branch: `tests/test_acceptance.py::test_acceptance_estimar_tamanho_funcional_por_branch`; variacao com inelegiveis: `tests/test_acceptance.py::test_acceptance_ignorar_arquivos_inelegiveis` |
 | Contratos | Pre-condicoes de processamento | `require` em `FunctionPointService` | `tests/test_fp_service.py::test_process_fp_count_requires_target_branch_when_compare_is_true` |
+| Contratos | Pos-condicoes de processamento | `ensure` + `validate_fp_result` | `tests/test_contracts.py::test_ensure_materializes_postcondition`; `tests/test_contracts.py::test_validate_fp_result_rejects_invalid_postcondition` |
+| Contratos | Invariantes de processamento | `invariant` + `validate_processing_invariants` | `tests/test_contracts.py::test_invariant_materializes_processing_invariant`; `tests/test_contracts.py::test_validate_processing_invariants_rejects_invalid_state` |
 | Contratos | Schema da resposta da IA | `validate_ai_response` | `tests/test_ai_client.py::test_ai_client_rejects_invalid_schema` |
 | Contratos | JSON puro valido da IA | `AzureOpenAIAnalyzer.consultar_especialista_ai` | `tests/test_ai_client.py::test_ai_client_parses_json_response` |
 | Contratos | JSON em markdown valido da IA | `AzureOpenAIAnalyzer.consultar_especialista_ai` | `tests/test_ai_client.py::test_ai_client_parses_markdown_json_response` |

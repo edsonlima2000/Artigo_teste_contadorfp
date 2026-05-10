@@ -3,7 +3,12 @@ import logging
 
 import gitlab
 
-from .contracts import require, validate_ai_response
+from .contracts import (
+    require,
+    validate_ai_response,
+    validate_fp_result,
+    validate_processing_invariants,
+)
 from .descriptions import gerar_descricao_detalhada, gerar_descricao_projeto, is_supported_path
 
 
@@ -19,8 +24,8 @@ class FunctionPointService:
             require(target_branch, "target_branch e obrigatorio quando compare=True.")
 
         if not compare:
-            return self._process_branch(project, source_branch, metadata_info)
-        return self._process_branch_comparison(project, source_branch, target_branch)
+            return validate_fp_result(self._process_branch(project, source_branch, metadata_info))
+        return validate_fp_result(self._process_branch_comparison(project, source_branch, target_branch))
 
     def process_fp_count_commit(self, project, selected_commit_id, metadata_info=None):
         require(project is not None, "project e obrigatorio.")
@@ -35,14 +40,16 @@ class FunctionPointService:
             diffs = commit.diff()
 
         resultado_total = {"Total_SFP": 0, "Elementos_FP": [], "Metadata": metadata_info}
+        validate_processing_invariants(resultado_total)
         self._process_diffs(project, diffs, selected_commit_id, resultado_total)
-        return resultado_total
+        return validate_fp_result(resultado_total)
 
     def _process_branch(self, project, source_branch, metadata_info):
         source_ref = self.gitlab_service.resolve_branch_sha(project, source_branch)
         print(f"Processando todos os arquivos no branch {source_branch} ({source_ref})...")
         files = project.repository_tree(ref=source_ref, recursive=True)
         resultado_total = {"Total_SFP": 0, "Elementos_FP": [], "Metadata": metadata_info}
+        validate_processing_invariants(resultado_total)
 
         with open("resultado_intermediario.txt", "w") as resultado_intermediario:
             for file in files:
@@ -73,6 +80,7 @@ class FunctionPointService:
         target_ref = self.gitlab_service.resolve_branch_sha(project, target_branch)
         print(f"Comparando {source_branch} ({source_ref}) com {target_branch} ({target_ref})...")
         resultado_total = {"Total_SFP": 0, "Elementos_FP": []}
+        validate_processing_invariants(resultado_total)
 
         try:
             comparison = project.repository_compare(from_=target_ref, to=source_ref)
@@ -123,6 +131,7 @@ class FunctionPointService:
             if resposta:
                 resultado_total["Total_SFP"] += resposta.get("Total_SFP", 0)
                 resultado_total["Elementos_FP"].extend(resposta.get("Elementos_FP", []))
+                validate_processing_invariants(resultado_total)
                 resultado_intermediario.write(json.dumps(resposta) + "\n")
         except Exception as error:
             logging.error(f"Erro ao processar o arquivo {path}: {error}")

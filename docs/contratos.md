@@ -1,5 +1,13 @@
 # Contratos do SUT
 
+## Materializacao executavel
+
+- `require`: valida pre-condicoes.
+- `ensure`: valida pos-condicoes.
+- `invariant`: valida invariantes de processamento.
+- `validate_fp_result`: valida a pos-condicao estrutural dos resultados de contagem.
+- `validate_processing_invariants`: valida o estado agregado durante o processamento.
+
 ## FunctionPointService.process_fp_count
 
 Pre-condicoes:

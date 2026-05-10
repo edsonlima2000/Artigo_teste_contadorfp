@@ -132,7 +132,7 @@ Ou execute diretamente pelo Python do ambiente virtual:
 
 Resultado esperado:
 
-   17 passed
+   22 passed
 
 Observacoes de seguranca
 ------------------------
