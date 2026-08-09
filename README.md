@@ -1,5 +1,7 @@
 # Automated Function Point Counter
 
+![Automated Function Point Counter social preview](artwork/social-preview.jpg)
+
 Academic Python prototype for estimating Software Function Points from GitLab changes with Azure OpenAI support.
 
 [Português](#português)
